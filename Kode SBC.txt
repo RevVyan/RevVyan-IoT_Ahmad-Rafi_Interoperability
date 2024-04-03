@@ -1,0 +1,53 @@
+from usb import *
+from time import *
+from gpio import *
+from ioeclient import *
+
+def getDir(x):
+	if "up" in x:
+		print("up")
+		return "0"
+	elif "down" in x:
+		print("down")
+		return "1"
+	elif "left" in x:
+		print("left")
+		return "2"
+	elif "right" in x:
+		print("right")
+		return "3"
+	else:
+		print(x)
+		return "4"
+
+def main():
+	# start USB
+	usb = USB(0, 57600)
+
+	# Setup Registration Server	
+	IoEClient.setup({
+		"type": "SBC",
+		"states": [{
+			"name": "Direction",
+			"type": "options",
+			"options": {
+				"0" : "Up",
+				"1" : "Down",
+				"2" : "Left",
+				"3" : "Right",
+				"4" : "Stop"
+			},
+			"controllable": False
+		}]
+	});
+
+	while True:
+		# read from USB
+		direction=""
+		while usb.inWaiting() > 0:
+			direction = usb.readLine()
+			IoEClient.reportStates(getDir(direction))
+		delay(500)
+
+if __name__ == "__main__":
+	main()

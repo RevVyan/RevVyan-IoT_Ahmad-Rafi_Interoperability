@@ -1,0 +1,27 @@
+from usb import *
+from time import *
+from gpio import *
+
+def main():
+	# start USB
+	usb = USB(0, 57600)
+	pinMode(0, IN)
+	pinMode(1, IN)
+	pinMode(2, IN)
+	pinMode(3, IN)
+	while True:
+		if digitalRead(0) == HIGH:
+			usb.write("left");
+		elif digitalRead(1) == HIGH:
+			usb.write("right");
+		elif digitalRead(2) == HIGH:
+			usb.write("up");
+		elif digitalRead(3) == HIGH:
+			usb.write("down");
+		else:
+			usb.write("stop");
+		
+		delay(500)
+
+if __name__ == "__main__":
+	main()
